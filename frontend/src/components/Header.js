@@ -55,12 +55,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function Header({ category }) {
   const [search, setSearch] = React.useState("");
   const dispatch = useDispatch();
-  const debouncedSearchTerm = useDebounce(search, 500);
 
-  React.useEffect(() => {
-    console.log(debouncedSearchTerm);
-    dispatch(fetchEventsAsync({ category, debouncedSearchTerm }));
-  }, [debouncedSearchTerm, dispatch, category]);
+  const searchEvent = () => {
+    dispatch(fetchEventsAsync({ category, search }));
+  };
+
+  useDebounce(searchEvent, search, 1000);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -92,24 +92,12 @@ export default function Header({ category }) {
   );
 }
 
-// Hook
-const useDebounce = (value, delay) => {
-  const [debouncedValue, setDebouncedValue] = React.useState("");
-  const firstDebounce = React.useRef(true);
-
+function useDebounce(func, value, timeout = 1000) {
   React.useEffect(() => {
-    if (value && firstDebounce.current) {
-      setDebouncedValue(value);
-      firstDebounce.current = false;
-      return;
-    }
+    const delayDebounceFn = setTimeout(() => {
+      func();
+    }, timeout);
 
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => clearTimeout(handler);
-  }, [value, delay]);
-
-  return debouncedValue;
-};
+    return () => clearTimeout(delayDebounceFn);
+  }, [value]);
+}
