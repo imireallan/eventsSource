@@ -18,11 +18,7 @@ function App() {
   }, [dispatch]);
 
   React.useEffect(() => {
-    if (category && category !== "" && category !== "All") {
-      dispatch(fetchEventsAsync({ category }));
-    } else if (category === "All") {
-      dispatch(fetchEventsAsync());
-    }
+    dispatch(fetchEventsAsync({ category }));
   }, [category, dispatch]);
 
   React.useEffect(() => {

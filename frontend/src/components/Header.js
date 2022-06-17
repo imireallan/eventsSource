@@ -55,14 +55,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function Header({ category }) {
   const [search, setSearch] = React.useState("");
   const dispatch = useDispatch();
+  const debouncedSearchTerm = useDebounce(search, 500);
 
   React.useEffect(() => {
-    if (search && search !== "") {
-      dispatch(fetchEventsAsync({ category, search }));
-    } else if (search === "" && category && category !== "") {
-      dispatch(fetchEventsAsync({ category, search }));
-    }
-  }, [search, dispatch, category]);
+    console.log(debouncedSearchTerm);
+    dispatch(fetchEventsAsync({ category, debouncedSearchTerm }));
+  }, [debouncedSearchTerm, dispatch, category]);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -93,3 +91,25 @@ export default function Header({ category }) {
     </Box>
   );
 }
+
+// Hook
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = React.useState("");
+  const firstDebounce = React.useRef(true);
+
+  React.useEffect(() => {
+    if (value && firstDebounce.current) {
+      setDebouncedValue(value);
+      firstDebounce.current = false;
+      return;
+    }
+
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debouncedValue;
+};

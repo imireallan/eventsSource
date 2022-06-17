@@ -1,9 +1,10 @@
 const baseURL = "api/v1";
 
 export async function fetchEvents({ category, search } = {}) {
+  let val = category === "All" ? "" : category;
   try {
     let url = `${baseURL}/events?search=${search || ""}&category=${
-      category || ""
+      val  || ""
     }`;
 
     const resp = await fetch(url);

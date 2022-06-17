@@ -6,7 +6,6 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  fetchEventsAsync,
   selectCategories,
   fetchCategoriesAsync,
 } from "../features/events/eventsSlice";
